@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="古文活用">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="theme-color" content="#e8ecef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1624" media="(prefers-color-scheme: dark)">
+<title>古文活用クイズ</title>
+<style>
+:root{--bg:#e8ecef;--card:#fafbfc;--ink:#14202e;--mute:#566474;--line:#c3ccd6;--ai:#234a7d;--on:#fff;--ya:#d48a0c;--ok:#1b7550;--okbg:#dff1e8;--ng:#b3362c;--ngbg:#f9e3e0;
+--fm:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP","BIZ UDPMincho",serif;--fs:"Hiragino Sans","Yu Gothic UI","Yu Gothic","Noto Sans JP",system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1624;--card:#172236;--ink:#e6ecf3;--mute:#8fa0b5;--line:#2b3b52;--ai:#7fb0ec;--on:#0e1624;--ya:#f0b93a;--ok:#5cc491;--okbg:#14301f;--ng:#ff8f84;--ngbg:#3a1f1f}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100vh;min-height:100dvh;color:var(--ink);font:16px/1.7 var(--fs);touch-action:manipulation;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+#app{max-width:560px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation;margin:0}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--ai);outline-offset:2px}
+h1{font:700 1.7rem/1.2 var(--fm);margin:0;letter-spacing:.08em}
+.sub{color:var(--mute);margin:4px 0 0;font-size:.95rem}
+.hd{display:flex;gap:14px;align-items:center;margin:8px 0 18px}
+.mark{flex:none;width:52px;height:52px;border-radius:6px;background:var(--ai);color:var(--on);display:grid;place-items:center;font:700 1.9rem var(--fm)}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.streak{display:flex;align-items:center;gap:16px}
+.streak .n{font:700 3.4rem/1 var(--fm);color:var(--ya)}
+.streak .l{font-size:.95rem;color:var(--mute)}
+.streak b{display:block;font-size:1.05rem;color:var(--ink)}
+.week{display:flex;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.week span{display:grid;justify-items:center;gap:4px;font-size:.78rem;color:var(--mute)}
+.week i{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:.85rem}
+.week .on i{background:var(--ya);border-color:var(--ya);color:var(--on)}
+.stat{display:flex;gap:18px;margin-top:10px;color:var(--mute);font-size:.88rem}
+.lab{font-weight:700;margin:6px 0 8px}
+.chips{display:flex;gap:8px;margin-bottom:12px}
+.chip{flex:1;min-height:52px;border:2px solid var(--line);background:var(--card);border-radius:12px;font-weight:700}
+.chip[aria-pressed=true]{border-color:var(--ai);background:var(--ai);color:var(--on)}
+.go,.sec{display:block;width:100%;min-height:62px;border-radius:14px;font-size:1.2rem;font-weight:700;margin-top:10px;border:2px solid var(--ai)}
+.go{background:var(--ai);color:var(--on)}
+.sec{background:transparent;color:var(--ai)}
+.go:active,.sec:active,.opt:active,.chip:active{transform:scale(.98)}
+details summary{cursor:pointer;font-weight:700;min-height:32px}
+details p{margin:10px 0 0;font-size:.92rem}
+.foot{color:var(--mute);font-size:.8rem;text-align:center;margin-top:18px}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.x{width:48px;height:48px;flex:none;border:2px solid var(--line);background:var(--card);border-radius:12px;font-size:1.1rem}
+.bar{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ai);transition:width .3s}
+.cnt{font-variant-numeric:tabular-nums;color:var(--mute);min-width:3.2em;text-align:right}
+.tag{text-align:center;font-weight:700;color:var(--ya);margin-bottom:8px}
+.q{display:flex;gap:18px;align-items:center;justify-content:center;padding:0;overflow:hidden}
+.tan{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:96px;min-height:210px;padding:0 0 18px;border-left:1.5px solid var(--line);border-right:1.5px solid var(--line);background:var(--card)}
+.tan:before{content:"";display:block;width:100%;height:14px;background:var(--ai)}
+.w{-webkit-writing-mode:vertical-rl;writing-mode:vertical-rl;font:700 2.7rem/1.15 var(--fm);letter-spacing:.06em;margin-top:6px}
+.r{-webkit-writing-mode:vertical-rl;writing-mode:vertical-rl;font:1rem var(--fm);color:var(--mute)}
+.ask{font-weight:700;padding:20px 22px 20px 0;max-width:11em}
+.ask small{display:block;color:var(--mute);font-weight:400;margin-bottom:4px}
+.cj{display:grid;grid-template-columns:repeat(6,1fr);gap:6px 4px;margin:10px 0 4px;text-align:center}.cj b{display:block;font-size:.72rem;color:var(--mute);font-weight:400}.cj span{display:block;font:700 .95rem/1.4 var(--fm);word-break:break-word;overflow-wrap:anywhere}@media(max-width:430px){.cj{grid-template-columns:repeat(3,1fr)}}
+.rl{font-size:.8rem;font-weight:700;color:var(--mute);margin-top:10px}.rl+.cj{margin-top:4px}.cj .hit{outline:2px solid var(--ya);outline-offset:1px;border-radius:8px}
+.opts.frm .opt{font:700 1.35rem var(--fm)}.opts.frm .opt:last-child:nth-child(odd){grid-column:auto}
+.ov{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px}.dlg{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:20px;width:100%;max-width:420px;text-align:center}.dlg p{margin:0 0 6px;font-weight:700}.dlg small{font-weight:400;color:var(--mute)}
+.sq{padding:16px 18px}.sent{font:600 1.25rem/1.9 var(--fm);margin:6px 0}.sent u{text-decoration-thickness:2px;text-underline-offset:5px;font-weight:700}.bl{color:var(--ai);font-weight:700}.askx{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-weight:700}.opts.pk{grid-template-columns:repeat(3,1fr)}
+.chips.wr{flex-wrap:wrap}.chips.wr .chip{flex:1 1 30%}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.opt{min-height:64px;border:2px solid var(--line);background:var(--card);border-radius:12px;font-size:1.2rem;font-weight:700}
+.opts .opt:last-child:nth-child(odd){grid-column:1/-1}
+.opts.adj .opt{min-height:84px;font-size:1.35rem}
+.opt:disabled{cursor:default;color:var(--ink);-webkit-text-fill-color:var(--ink);opacity:1}
+#fb{scroll-margin-bottom:28px}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}.opt.ok:before{content:"○ ";color:var(--ok)}
+.opt.ng{border-color:var(--ng);background:var(--ngbg)}.opt.ng:before{content:"× ";color:var(--ng)}
+.fb{border-radius:12px;padding:14px 16px;border:2px solid}
+.fb.good{border-color:var(--ok);background:var(--okbg)}.fb.bad{border-color:var(--ng);background:var(--ngbg)}
+.fb strong{font-size:1.15rem}.fb p{margin:6px 0 0}.fb .ex{font-size:.95rem}
+.score{font:700 4rem/1.1 var(--fm);text-align:center;margin:6px 0 0}
+.mid{text-align:center;color:var(--mute);margin:0 0 6px}
+.res{list-style:none;padding:0;margin:8px 0 0}
+.res li{padding:8px 0;border-top:1px solid var(--line)}
+.res li:first-child{border-top:0}
+.res em{font-style:normal;color:var(--mute);font-size:.9rem}
+@media(max-width:380px){.w{font-size:2.3rem}.ask{padding-right:14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const T={
+yodan:{n:"四段",e:"ア・イ・ウ・エ の4段にわたって活用。未然形に「ず」が付くとア段になる。"},
+kami1:{n:"上一段",e:"イ段の1段だけで活用。「ひいきにみゐる」で覚える:干る・射る・着る・似る/煮る・見る・居る/率る(+用ゐる)。"},
+shimo1:{n:"下一段",e:"エ段の1段だけで活用。古文では「蹴る」ただ1語。"},
+kami2:{n:"上二段",e:"ウ段とイ段の2段で活用。未然形に「ず」が付くとイ段になる。"},
+shimo2:{n:"下二段",e:"ウ段とエ段の2段で活用。未然形に「ず」が付くとエ段になる。"},
+ka:{n:"カ変",e:"「来(く)」1語だけ(複合語を含む)。こ・き・く・くる・くれ・こ(こよ)。"},
+sa:{n:"サ変",e:"「す・おはす」と、「〜す・〜ず」の複合動詞。せ・し・す・する・すれ・せよ。"},
+na:{n:"ナ変",e:"「死ぬ・往ぬ(去ぬ)」の2語だけ。な・に・ぬ・ぬる・ぬれ・ね。"},
+ra:{n:"ラ変",e:"「あり・をり・はべり・いまそかり」の4語だけ。終止形が「り」で終わる。"},
+ku:{n:"ク活用",e:"連用形が「〜く」の形(〜くなる)。補助活用(カリ活用)は「く+あり」が縮まったもので、から・かり・かる・かれ。助動詞に続くときに使う。"},
+siku:{n:"シク活用",e:"連用形が「〜しく」の形(〜しくなる)。補助活用(シカリ活用)は「しく+あり」が縮まったもので、しから・しかり・しかる・しかれ。助動詞に続くときに使う。"}};
+const V=["yodan","kami1","shimo1","kami2","shimo2","ka","sa","na","ra"],A=["ku","siku"];
+const raw={
+yodan:"書く|かく,行く|ゆく,読む|よむ,飛ぶ|とぶ,思ふ|おもふ,言ふ|いふ,立つ|たつ,取る|とる,咲く|さく,歩く|あるく",
+kami1:"見る|みる,着る|きる,似る|にる,煮る|にる,干る|ひる,射る|いる,居る|ゐる,率る|ゐる,用ゐる|もちゐる",
+shimo1:"蹴る|ける",
+kami2:"起く|おく,過ぐ|すぐ,落つ|おつ,恋ふ|こふ,悔ゆ|くゆ,老ゆ|おゆ,恥づ|はづ,閉づ|とづ,尽く|つく",
+shimo2:"受く|うく,捨つ|すつ,出づ|いづ,得|う,寝|ぬ,経|ふ,見ゆ|みゆ,聞こゆ|きこゆ,答ふ|こたふ,教ふ|をしふ,求む|もとむ",
+ka:"来|く,出で来|いでく,持て来|もてく",
+sa:"す|す,おはす|おはす,念ず|ねんず,愛す|あいす,具す|ぐす,奏す|そうす",
+na:"死ぬ|しぬ,往ぬ|いぬ,去ぬ|いぬ",
+ra:"あり|あり,をり|をり,はべり|はべり,いまそかり|いまそかり",
+ku:"高し|たかし,長し|ながし,白し|しろし,良し|よし,遠し|とほし,多し|おほし,無し|なし,古し|ふるし,めでたし|めでたし",
+siku:"美し|うつくし,悪し|あし,悲し|かなし,をかし|をかし,恋し|こひし,嬉し|うれし,楽し|たのし,苦し|くるし,わびし|わびし,恐ろし|おそろし,珍し|めづらし"};
+const Q=[];for(const k in raw)raw[k].split(",").forEach(s=>{const[w,r]=s.split("|");Q.push({w,r,t:k,adj:A.includes(k)})});
+
+const FI=[0,1,3,5];let ai=0;
+Q.filter(q=>q.adj).forEach(b=>{const f=FI[ai++%4],s=b.w.slice(0,-1),r=b.r.slice(0,-1),m=b.t==="ku"?"":"し",x=["から","かり","","かる","","かれ"][f];Q.push({w:s+m+x,r:r+m+x,t:b.t,adj:true,k:true,f,b})});
+const app=document.getElementById("app"),KEY="kobun_katsuyo_v1";let mem=null,cfg={n:10,scope:"all",mode:"mix"},S=null;
+const load=()=>{try{const j=JSON.parse(localStorage.getItem(KEY));if(j)return j}catch(e){}return mem||{last:"",streak:0,best:0,days:[],done:0,ok:0}};
+let dbRef=null,wT=null;
+const save=d=>{mem=d;try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}push()};
+function push(){if(!dbRef)return;clearTimeout(wT);wT=setTimeout(()=>{dbRef.set(mem).catch(()=>{})},400)}
+function merge(l,r){const b=(r.last>l.last||(r.last===l.last&&r.streak>=l.streak))?r:l,m=r.done>l.done?r:l;
+ return{last:b.last,streak:b.streak,best:Math.max(l.best||0,r.best||0,b.streak),days:[...new Set([...(l.days||[]),...(r.days||[])])].sort().slice(-60),done:m.done,ok:m.ok}}
+let stOK=true;try{localStorage.setItem("_t","1");localStorage.removeItem("_t")}catch(e){stOK=false}
+const dobj=n=>{const d=new Date();d.setDate(d.getDate()+n);return d};
+const ymd=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const dayOff=n=>ymd(dobj(n));
+const curStreak=d=>d.last===dayOff(0)||d.last===dayOff(-1)?d.streak:0;
+const G={く:"かきくけ",ぐ:"がぎぐげ",す:"さしすせ",つ:"たちつて",づ:"だぢづで",ぬ:"なにぬね",ふ:"はひふへ",ぶ:"ばびぶべ",む:"まみむめ",ゆ:"やいゆえ",る:"らりるれ"};
+const SP={得:["え","え","う","うる","うれ","えよ"],寝:["ね","ね","ぬ","ぬる","ぬれ","ねよ"],経:["へ","へ","ふ","ふる","ふれ","へよ"]};
+function conj(q){
+ const o=q.b||q,w=o.w,t=q.t,s=w.slice(0,-1),e=w.slice(-1),g=G[e];
+ if(SP[w])return SP[w];
+ if(t==="yodan"&&g)return[s+g[0],s+g[1],w,w,s+g[3],s+g[3]];
+ if(t==="kami2"&&g)return[s+g[1],s+g[1],w,w+"る",w+"れ",s+g[1]+"よ"];
+ if(t==="shimo2"&&g)return[s+g[3],s+g[3],w,w+"る",w+"れ",s+g[3]+"よ"];
+ if(t==="kami1"||t==="shimo1")return[s,s,w,w,s+"れ",s+"よ"];
+ if(t==="ka"){const b=o.r.slice(0,-1);return[b+"こ",b+"き",b+"く",b+"くる",b+"くれ",b+"こ(こよ)"]}
+ if(t==="sa")return e==="ず"?[s+"ぜ",s+"じ",w,w+"る",w+"れ",s+"ぜよ"]:[s+"せ",s+"し",w,s+"する",s+"すれ",s+"せよ"];
+ if(t==="na")return[s+"な",s+"に",w,s+"ぬる",s+"ぬれ",s+"ね"];
+ if(t==="ra")return[s+"ら",s+"り",w,s+"る",s+"れ",s+"れ"];
+ if(t==="ku")return[s+"く",s+"く",w,s+"き",s+"けれ","○"];
+ if(t==="siku")return[s+"しく",s+"しく",w,s+"しき",s+"しけれ","○"];
+ return null;
+}
+const L=["未然","連用","終止","連体","已然","命令"];
+const grid=(c,hit)=>`<div class="cj">${L.map((l,i)=>`<div class="${hit===i?"hit":""}"><b>${l}</b><span>${c[i]}</span></div>`).join("")}</div>`;
+function cjHtml(q){
+ const c=conj(q);if(!c)return"";if(!q.adj)return grid(c,q.m?q.fi:-1);
+ const o=q.b||q,s=o.w.slice(0,-1),m=q.t==="ku"?"":"し",k=["から","かり","○","かる","○","かれ"].map(x=>x==="○"?x:s+m+x);
+ return`<div class="rl">本活用</div>${grid(c,q.m&&!q.kari?q.fi:-1)}<div class="rl">カリ活用</div>${grid(k,q.k?q.f:q.m&&q.kari?q.fi:-1)}`}
+const AX={
+tsu:{n:"つ",f:["て","て","つ","つる","つれ","てよ"],t:"下二段型",c:"連用形",m:"完了・強意"},
+nu:{n:"ぬ",f:["な","に","ぬ","ぬる","ぬれ","ね"],t:"ナ変型",c:"連用形",m:"完了・強意"},
+ki:{n:"き",f:["(せ)","○","き","し","しか","○"],t:"特殊型",c:"連用形(カ変・サ変は未然形にも)",m:"過去"},
+ke:{n:"けり",f:["(けら)","○","けり","ける","けれ","○"],t:"ラ変型",c:"連用形",m:"過去・詠嘆"},
+ta:{n:"たり",f:["たら","たり","たり","たる","たれ","たれ"],t:"ラ変型",c:"連用形",m:"完了・存続"},
+ri:{n:"り",f:["ら","り","り","る","れ","れ"],t:"ラ変型",c:"サ変の未然形・四段の已然形",m:"完了・存続"}};
+const GR={g1:["tsu","nu"],g2:["ki","ke"],g3:["ta","ri"]},XR=[];
+const addX=(k,t)=>t.trim().split("\n").forEach(l=>XR.push([k,...l.split("|")]));
+addX("f",`ri|2|山に霞立て（り）。|り|文末なので終止形。「立て」は四段「立つ」の已然形(命令形)で、りに接続する。
+ri|3|梅の咲け（り）枝を折る。|る|名詞「枝」に続くので連体形。
+ri|4|雨降れ（り）ば、出でず。|れ|接続助詞「ば」(確定条件)の上なので已然形。
+ri|0|花の咲け（り）ず。|ら|打消「ず」に続くので未然形。
+nu|2|船、岸に着き（ぬ）。|ぬ|文末なので終止形。
+nu|3|日暮れ（ぬ）ほどに、|ぬる|名詞「ほど」に続くので連体形。
+nu|4|月こそ傾き（ぬ）。|ぬれ|係助詞「こそ」の結びなので已然形。
+nu|0|花散り（ぬ）ば、惜しからむ。|な|仮定を表す「ば」の上は未然形。
+tsu|3|文を書き（つ）人を見る。|つる|名詞「人」に続くので連体形。
+tsu|4|鐘をこそ打ち（つ）。|つれ|係助詞「こそ」の結びなので已然形。
+tsu|1|文を書き（つ）けり。|て|「けり」は連用形に接続するので連用形。
+ki|3|昔、ここに住み（き）人あり。|し|名詞「人」に続くので連体形。
+ki|4|雨降り（き）ば、出でず。|しか|確定条件の「ば」の上は已然形。
+ki|0|世に桜のなかり（き）ば、心のどけからまし。|せ|「せば」の形で未然形(反実仮想)。
+ke|3|雨の降り（けり）日、出でず。|ける|名詞「日」に続くので連体形。
+ke|4|月こそ出で（けり）。|けれ|係助詞「こそ」の結びなので已然形。
+ta|3|文を持ち（たり）人を見る。|たる|名詞「人」に続くので連体形。
+ta|0|雪降り（たり）ば、出でじ。|たら|仮定を表す「ば」の上は未然形。
+ta|3|雪ぞ降り（たり）。|たる|係助詞「ぞ」の結びなので連体形。`);
+addX("v",`ri|3|風（吹く）る折、あはれなり。|吹け|吹か,吹き,吹く,吹け|「る」は「り」の連体形。「り」は四段動詞の已然形に接続するので「吹け」。
+ri|2|つひに別れを（す）り。|せ|せ,し,す,する|「り」はサ変動詞の未然形に接続するので「せ」。
+nu|2|船、岸に（着く）ぬ。|着き|着か,着き,着く,着け|「ぬ」は連用形に接続するので「着き」。
+ki|3|昔ここに（住む）し人あり。|住み|住ま,住み,住む,住め|「き」は連用形に接続するので「住み」。
+ke|2|月を（見る）けり。|見|見,見る,見れ,見よ|「けり」は連用形に接続。上一段「見る」の連用形は「見」。
+tsu|4|月こそ（出づ）つれ。|出で|出で,出づ,出づる,出でよ|「つ」は連用形に接続。下二段「出づ」の連用形は「出で」。
+nu|0|花（散る）なば惜し。|散り|散ら,散り,散る,散れ|「ぬ」は連用形に接続するので「散り」。
+ki|4|雨（降る）しかば、出でず。|降り|降ら,降り,降る,降れ|「き」は連用形に接続するので「降り」。`);
+addX("p",`ki|3|傍線部「し」のうち、過去の助動詞「き」の活用したものはどれか。|心地よく｢し｣てゐたり。/この山の景色、うつく｢し｣。/昔ここに住み｢し｣人なり。|ハ|イはサ変動詞「す」の連用形、ロは形容詞「うつくし」の活用語尾、ハは「住み」+「き」の連体形「し」。
+ke|4|傍線部のうち、過去の助動詞「けり」の活用した語はどれか。|この花の色こそ白｢けれ｣。/山鳥の声こそ聞こえ｢けれ｣。|ロ|イは形容詞「白し」の已然形の活用語尾。ロは「聞こえ」+「けり」の已然形「けれ」。
+nu|0|傍線部のうち、完了の助動詞「ぬ」の活用したものはどれか。|花散り｢な｣ばいかがせむ。/雨も降ら｢ぬ｣日なり。/人の死｢ぬ｣る世なり。|イ|ロは打消「ず」の連体形、ハはナ変動詞「死ぬ」の活用語尾。イは「散り」+「ぬ」の未然形「な」。
+nu|1|傍線部「に」のうち、完了の助動詞「ぬ」の連用形はどれか。|日も暮れ｢に｣けり。/いと静か｢に｣して過ごす。/都｢に｣住みし人なり。|イ|ロは形容動詞「静かなり」の連用形の活用語尾、ハは格助詞。
+tsu|4|傍線部のうち、助動詞「つ」の活用したものはどれか。|文を書き｢つれ｣ば、出づ。/山の端に月出で｢ぬれ｣ば、帰る。|イ|イは「書き」+「つ」の已然形「つれ」。ロは「ぬ」の已然形「ぬれ」。
+ta|3|傍線部のうち、助動詞「たり」の活用したものはどれか。|花の咲き｢たる｣枝を折る。/梅の咲け｢る｣枝を折る。|イ|イは連用形「咲き」+「たり」の連体形「たる」。ロは已然形「咲け」+「り」の連体形「る」。`);
+addX("o",`nu|1|日も暮れ｢に｣けり。|連用形|「けり」は連用形に接続するので「に」は連用形。
+tsu|3|文を書き｢つる｣人を見る。|連体形|名詞「人」に続くので連体形。
+nu|2|雨降り｢ぬ｣べし。|終止形|「べし」は終止形に接続するので終止形。
+ke|3|男ぞあり｢ける｣。|連体形|係助詞「ぞ」の結びなので連体形。
+ke|4|花こそ咲き｢けれ｣。|已然形|係助詞「こそ」の結びなので已然形。
+ki|4|雨降り｢しか｣ば、出でず。|已然形|確定条件の「ば」の上は已然形。
+ri|3|咲け｢る｣枝を折る。|連体形|名詞「枝」に続くので連体形。
+ta|0|雪降り｢たら｣ば、出でじ。|未然形|仮定を表す「ば」の上は未然形。
+tsu|4|月出で｢つれ｣ど、見る人なし。|已然形|逆接確定条件の「ど」の上は已然形。
+ke|2|いと寒かり｢けり｣。|終止形|文末なので終止形。`);
+addX("m",`nu|2|月傾き｢ぬ｣べし。|強意|推量の助動詞「べし」の上の「ぬ」は強意(きっと〜)。
+nu|1|花散り｢に｣けり。|完了|「にけり」の「に」は完了(〜てしまった)。
+ta|3|花の咲き｢たる｣枝。|存続|「咲いている」状態を表すので存続。
+ke|2|昔、男あり｢けり｣。|過去|語りの過去(伝聞過去)。
+ke|2|これは盗人なり｢けり｣。|詠嘆|「なりけり」は気づきを表す詠嘆(〜だったのだなあ)。
+ki|3|夢に見｢し｣人なり。|過去|直接経験した過去を表す「き」。
+ri|3|風の吹け｢る｣折。|存続|「吹いている」状態を表すので存続。`);
+addX("c",`ri|3|花の咲け（り・たり）枝を折る。|る|る,たる,れ,たれ|「咲け」は四段動詞の已然形。已然形に接続するのは「り」なので、連体形の「る」。
+ta|3|花の咲き（り・たり）枝を折る。|たる|る,たる,れ,たれ|「咲き」は連用形。連用形に接続するのは「たり」なので、連体形の「たる」。
+ri|4|雨降れ（り・たり）ば、出でず。|れ|れ,たれ,る,たる|「降れ」は四段動詞の已然形。「り」の已然形「れ」が入る。
+ta|4|雨降り（り・たり）ば、出でず。|たれ|れ,たれ,る,たる|「降り」は連用形。「たり」の已然形「たれ」が入る。
+ri|0|花咲け（り・たり）ず。|ら|ら,たら,る,たる|「咲け」は四段動詞の已然形。「り」の未然形「ら」が入る。
+ta|0|花咲き（り・たり）ず。|たら|ら,たら,る,たる|「咲き」は連用形。「たり」の未然形「たら」が入る。`);
+["tsu","nu","ki","ke","ta","ri"].forEach(a=>XR.push(["s",a,"-1"]));
+const auxList=()=>XR.filter(r=>cfg.scope==="all"||GR[cfg.scope].includes(r[1]));
+function mkX(r){
+ const[k,a,fi]=r,A=AX[a],pool=[...new Set(A.f.map(x=>x.replace(/[()]/g,"")).filter(x=>x!=="○"))],p3=(an,p)=>shuffle([an,...shuffle(p.filter(x=>x!==an)).slice(0,3)]),q={x:k,a,fi:+fi};
+ if(k==="f")Object.assign(q,{s:r[3],ans:r[4],exp:r[5],ask:"空欄の助動詞「"+A.n+"」を適する形に活用させよ。",opts:p3(r[4],pool)});
+ else if(k==="v"||k==="c")Object.assign(q,{s:r[3],ans:r[4],exp:r[6],ask:k==="c"?"空欄に「り」か「たり」の適する方を、適当な形に活用させて入れよ。":"（　）の動詞を適する形に活用させよ。",opts:shuffle(r[5].split(","))});
+ else if(k==="s"){const ar=a==="ri"?"已然形(サ変は未然形)":"連用形";Object.assign(q,{ask:"助動詞「"+A.n+"」の接続は?",ans:ar,exp:"「"+A.n+"」は"+A.c+"に接続する。",opts:p3(ar,["未然形","連用形","終止形","連体形",a==="ri"?"已然形(サ変は未然形)":"已然形"])})}
+ else if(k==="p"){const ss=r[4].split("/");Object.assign(q,{pk:1,ask:r[3],ss,ans:r[5],exp:r[6],opts:["イ","ロ","ハ"].slice(0,ss.length)})}
+ else if(k==="o")Object.assign(q,{s:r[3],ans:r[4],exp:r[5],ask:"傍線部の助動詞の活用形はどれか。",opts:p3(r[4],L.map(x=>x+"形"))});
+ else Object.assign(q,{s:r[3],ans:r[4],exp:r[5],ask:"傍線部の助動詞の意味はどれか。",opts:p3(r[4],["完了","強意","過去","詠嘆","存続"])});
+ return q}
+const sp=t=>t.replace(/｢(.*?)｣/g,"<u>$1</u>").replace(/（([^）]+)）/g,'<span class="bl">（$1）</span>');
+function quizX(q){
+ app.innerHTML=`<div class="top"><button class="x" data-a="quit" aria-label="中断してホームへ">✕</button><div class="bar"><i style="width:${S.i/S.list.length*100}%"></i></div><span class="cnt">${S.i+1}/${S.list.length}</span></div>${S.ph?'<div class="tag">間違えた問題をもう一度</div>':""}
+ <section class="card sq"><div class="lab">${q.b?"古文の活用":"助動詞の問題"}</div>${q.pk?q.ss.map((t,i)=>`<p class="sent">${"イロハ"[i]}　${sp(t)}</p>`).join(""):q.s?`<p class="sent">${sp(q.s)}</p>`:""}<div class="askx">${q.ask}</div></section>
+ <div class="opts frm${q.pk?" pk":""}">${q.opts.map(k=>`<button class="opt" data-a="ans" data-v="${k}">${k}</button>`).join("")}</div><div id="fb" aria-live="polite"></div>`;
+ scrollTo(0,0)}
+function xFb(q,ok,last){
+ const A=q.a?AX[q.a]:null,tb=q.b?cjHtml(q)+`<p class="ex">${T[q.t].e}</p>`:grid(A.f,q.fi)+`<p class="ex">助動詞「${A.n}」(${A.t})。${A.c}に接続。意味は${A.m}。</p>`;
+ return`<div class="fb ${ok?"good":"bad"}"><strong>${ok?"○ 正解!":"× 不正解"}</strong><p>答え: <b>${q.ans}</b></p><p class="ex">${q.exp}</p>${tb}</div><button class="go" data-a="next">${last?(!S.ph&&S.wrong.length?"復習へ進む":"結果を見る"):"次の問題"}</button>`}
+const EXP=["打消「ず」に続くので未然形。","連用形に接続する語(たり・けり・なる など)に続くので連用形。","文末で言い切るので終止形。","体言「人」に続くので連体形。","接続助詞「ども」の上なので已然形。","文末で命令の意を表すので命令形。"];
+const FT=["ず。","たり。","。","人あり。","ども、","。"];
+const baseL=()=>Q.filter(q=>!q.k&&(cfg.scope==="all"||(cfg.scope==="v"&&!q.adj)||(cfg.scope==="a"&&q.adj)));
+function mkG(b,md){
+ const ad=b.adj,c=conj(b).slice(),pk=a=>a[Math.floor(Math.random()*a.length)],p3=(an,p)=>shuffle([an,...shuffle(p.filter(x=>x!==an)).slice(0,3)]);
+ if(b.t==="ka")c[5]=b.r.slice(0,-1)+"こよ";
+ let f,k=0,form,tail,pool=c;
+ if(ad){const s=b.w.slice(0,-1),m=b.t==="ku"?"":"し",kr=["から","かり","○","かる","○","かれ"].map(x=>x==="○"?x:s+m+x);
+  [k,f]=pk([[0,1],[0,2],[0,3],[0,4],[1,0],[1,1],[1,3],[1,5]]);
+  form=(k?kr:c)[f];tail=k?["ず。","けり。","","人あり。","","。"][f]:["","なる。","。","人あり。","ども、",""][f];pool=[...c,...kr]}
+ else{f=pk([0,1,2,3,4,5]);form=c[f];tail=FT[f]}
+ const nm=t=>T[t].n+(ad?(k?"(カリ)":""):"活用"),fm=L[f]+"形";let ans,opts,s,ask;
+ if(md==="fill"){ans=form;s="（"+b.w+"）"+tail;ask="（　）内の語を、適当な形に直せ。"+({2:"(言い切りの形)",5:"(命令の意)"}[f]||"");opts=p3(ans,[...new Set(pool.filter((x,i)=>x!=="○"&&i%6!==f))])}
+ else{s="｢"+form+"｣"+tail;
+  if(md==="ident"){ans=fm;ask="傍線部の活用形を、下に続く語に注意して答えよ。";opts=p3(ans,L.map(x=>x+"形"))}
+  else{const t2=pk((ad?A:V).filter(x=>x!==b.t)),f2=pk([0,1,2,3,4,5].filter(x=>x!==f));ans=nm(b.t)+"・"+fm;ask="傍線部の活用の種類と活用形を答えよ。";opts=shuffle([ans,nm(b.t)+"・"+L[f2]+"形",nm(t2)+"・"+fm,nm(t2)+"・"+L[f2]+"形"])}}
+ return{x:"g",m:1,b,w:b.w,r:b.r,t:b.t,adj:ad,kari:!!k,fi:f,ans,opts,s,ask,exp:b.w+"("+b.r+")は"+T[b.t].n+(ad?"":"活用")+"。"+EXP[f]}}
+const GY={見る:"マ",着る:"カ",似る:"ナ",煮る:"ナ",干る:"ハ",射る:"ヤ",居る:"ワ",率る:"ワ",用ゐる:"ワ",蹴る:"カ",得:"ア",寝:"ナ",経:"ハ"},GK={く:"カ",ぐ:"ガ",す:"サ",つ:"タ",づ:"ダ",ぬ:"ナ",ふ:"ハ",ぶ:"バ",む:"マ",ゆ:"ヤ",る:"ラ"};
+const gyo=b=>GY[b.w]||GK[b.w.slice(-1)];
+function mkY(b){
+ const g=gyo(b)+"行",all=["ア","カ","ガ","サ","タ","ダ","ナ","ハ","バ","マ","ヤ","ラ","ワ"].map(x=>x+"行");
+ return{x:"y",m:1,b,w:b.w,r:b.r,t:b.t,adj:false,fi:-1,s:"｢"+b.w+"｣("+b.r+")",ans:g,opts:shuffle([g,...shuffle(all.filter(x=>x!==g)).slice(0,3)]),ask:"傍線部の動詞の活用の行はどれか。",exp:b.w+"("+b.r+")は"+g+T[b.t].n+"活用。ア行・ヤ行・ワ行などは、読みから慎重に判断する。"}}
+const withY=p=>p.map(q=>{const b=q.b||q;return(["yodan","kami1","shimo1","kami2","shimo2"].includes(b.t)&&!q.k&&q.x!=="y"&&cfg.mode!=="aux"&&Math.random()<.15)?mkY(b):q});
+function mixList(){const k=cfg.n===10?2:6,tk=(a,m)=>shuffle(a).slice(0,k).map(m);
+ return shuffle([...tk(Q,x=>x),...tk(baseL(),b=>mkG(b,"ident")),...tk(baseL(),b=>mkG(b,"fill")),...tk(baseL(),b=>mkG(b,"desc")),...tk(XR,mkX)])}
+const MD={mix:"全モードから少しずつ出題(毎日はこれがおすすめ)",type:"語を見て、活用の種類を答える",ident:"傍線部の活用形を、下に続く語に注意して答える",fill:"（　）内の語を、適当な形に直す",desc:"傍線部の活用の種類と活用形をあわせて答える",aux:"つ・ぬ・き・けり・たり・りの活用・接続・意味"};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const inScope=q=>cfg.scope==="all"||(cfg.scope==="v"&&!q.adj)||(cfg.scope==="a"&&q.adj)||(cfg.scope==="k"&&q.k);
+const chip=(a,v,l,on)=>`<button class="chip" data-a="${a}" data-v="${v}" aria-pressed="${on}">${l}</button>`;
+
+const scopeChips=()=>(cfg.mode==="mix"?[["all","すべて"]]:cfg.mode==="aux"?[["all","すべて"],["g1","つ・ぬ"],["g2","き・けり"],["g3","たり・り"]]:[["all","すべて"],["v","動詞"],["a","形容詞"],...(cfg.mode==="type"?[["k","カリ活用"]]:[])]).map(([v,l])=>chip("scope",v,l,cfg.scope===v)).join("");
+function home(){
+ S=null;const d=load(),s=curStreak(d),today=d.last===dayOff(0),N=cfg.mode==="mix"?30:(cfg.mode==="aux"?auxList():["ident","fill","desc"].includes(cfg.mode)?baseL():Q.filter(inScope)).length,wk="日月火水木金土";
+ const dots=[6,5,4,3,2,1,0].map(i=>{const o=dobj(-i),on=d.days.includes(ymd(o));return`<span class="${on?"on":""}"><i>${on?"✓":""}</i>${wk[o.getDay()]}</span>`}).join("");
+ app.innerHTML=`<div class="hd"><div class="mark" aria-hidden="true">活</div><div><h1>古文活用クイズ</h1><p class="sub">動詞・形容詞の活用の種類を覚える</p></div></div>
+ <section class="card"><div class="streak"><div class="n" aria-hidden="true">🔥${s}</div><div class="l"><b>${s}日連続</b>${today?"今日の練習は完了しました":s?"今日まだ練習していません":"クイズを1回終えると記録が始まります"}</div></div>
+ <div class="week" aria-label="直近7日間の練習記録">${dots}</div>
+ <div class="stat"><span>最長 ${d.best||0}日</span><span>累計 ${d.done}問</span><span>正答率 ${d.done?Math.round(d.ok/d.done*100):0}%</span></div></section>
+ <div class="lab">モード</div><div class="chips wr">${chip("mode","mix","ミックス",cfg.mode==="mix")}${chip("mode","type","種類",cfg.mode==="type")}${chip("mode","ident","活用形",cfg.mode==="ident")}${chip("mode","fill","空欄補充",cfg.mode==="fill")}${chip("mode","desc","種類+活用形",cfg.mode==="desc")}${chip("mode","aux","助動詞",cfg.mode==="aux")}</div><p class="sub" style="margin:-4px 0 12px">${MD[cfg.mode]}</p>
+ <div class="lab">出題数</div><div class="chips">${chip("num",10,"10問",cfg.n===10)}${chip("num",0,"全問題("+N+"問)",cfg.n===0)}</div>
+ <div class="lab">範囲</div><div class="chips">${scopeChips()}</div>
+ <button class="go" data-a="start">クイズを始める</button>
+ <details class="card" style="margin-top:18px"><summary>活用の種類まとめ</summary>${Object.keys(T).map(k=>`<p><b>${T[k].n}</b>　${T[k].e}</p>`).join("")}</details>
+ ${dbRef?'<p class="foot">記録はあなたのClaudeアカウントに保存されます。</p>':stOK?'<p class="foot">記録はこの端末のブラウザ内にだけ保存されます。通信は一切行いません。</p>':'<p class="foot" style="color:var(--ng)">この環境では記録を保存できません。ページを閉じると継続日数などは消えます。</p>'}`;
+}
+
+function quiz(){
+ const q=S.list[S.i],o=q.adj?A:V;if(q.x)return quizX(q);
+ app.innerHTML=`<div class="top"><button class="x" data-a="quit" aria-label="中断してホームへ">✕</button><div class="bar"><i style="width:${S.i/S.list.length*100}%"></i></div><span class="cnt">${S.i+1}/${S.list.length}</span></div>
+ ${S.ph?'<div class="tag">間違えた問題をもう一度</div>':""}
+ <section class="card q"><div class="tan"><div class="w">${q.w}</div><div class="r">${q.r}</div></div><div class="ask">${q.m?`<small>${T[q.t].n}</small>「${q.w}」の<b>${L[q.fi]}形</b>${q.adj?(q.kari?"(カリ活用)":"(本活用)"):""}はどれ?`:`<small>${q.k?"形容詞(カリ活用の形)":q.adj?"形容詞":"動詞"}</small>活用の種類はどれ?`}</div></section>
+ <div class="opts${q.m?" frm":q.adj?" adj":""}">${q.m?q.opts.map(k=>`<button class="opt" data-a="ans" data-v="${k}">${k}</button>`).join(""):o.map(k=>`<button class="opt" data-a="ans" data-v="${k}">${T[k].n}</button>`).join("")}</div><div id="fb" aria-live="polite"></div>`;
+ scrollTo(0,0);
+}
+function mid(){
+ app.innerHTML=`<div class="top"><div class="bar"><i style="width:100%"></i></div></div>
+ <section class="card"><div class="score">${S.first}/${S.n0}</div><p class="mid">1回目の結果</p><p>間違えた<b>${S.wrong.length}問</b>をもう一度出題します。</p></section>
+ <button class="go" data-a="retry">復習を始める</button>`;
+}
+function finish(){
+ const d=load(),t=dayOff(0);
+ if(d.last!==t){d.streak=d.last===dayOff(-1)?d.streak+1:1;d.last=t;d.best=Math.max(d.best||0,d.streak)}
+ if(!d.days.includes(t))d.days.push(t);d.days=d.days.slice(-60);save(d);
+ const p=Math.round(S.first/S.n0*100),left=S.ph?S.w2:S.wrong,msg=p===100?"全問正解!":p>=70?"あと少し。復習で固めよう":"繰り返せば必ず定着します";
+ app.innerHTML=`<section class="card"><div class="score">${S.first}/${S.n0}</div><p class="mid">1回目の正答率 ${p}%　${msg}</p>
+ ${S.ph?`<p class="mid">復習ラウンド: ${S.r2}/${S.rt}問 正解</p>`:""}</section>
+ <section class="card streak"><div class="n" aria-hidden="true">🔥${d.streak}</div><div class="l"><b>${d.streak}日連続</b>今日の練習を記録しました</div></section>
+ ${left.length?`<section class="card"><div class="lab">まだ覚えきれていない語</div><ul class="res">${left.map(q=>`<li>${q.x?`${(q.s||q.ask).replace(/[｢｣]/g,"")} → <b>${q.ans}</b>`:q.m?`<b>${q.w}</b> の${L[q.fi]}形 → <b>${q.ans}</b>`:`<b>${q.w}</b> <em>(${q.r})</em> → ${T[q.t].n}`}</li>`).join("")}</ul></section>`:""}
+ <button class="go" data-a="start">同じ設定でもう一度</button><button class="sec" data-a="home">ホームへ</button>`;
+ scrollTo(0,0);
+}
+
+const act={
+ mode(v){cfg.mode=v;cfg.scope="all";home()},
+ num(v){cfg.n=+v;home()},
+ scope(v){cfg.scope=v;home()},
+ home,
+ start(){let p=cfg.mode==="mix"?mixList():shuffle(cfg.mode==="aux"?auxList().map(mkX):["ident","fill","desc"].includes(cfg.mode)?baseL().map(b=>mkG(b,cfg.mode)):Q.filter(inScope));if(cfg.n&&cfg.mode!=="mix")p=p.slice(0,cfg.n);p=withY(p);S={list:p,i:0,ph:0,wrong:[],first:0,w2:[],r2:0,rt:0,n0:p.length,ans:false};quiz()},
+ quit(){document.body.insertAdjacentHTML("beforeend",'<div class="ov" id="ov" role="dialog" aria-modal="true"><div class="dlg"><p>中断してホームに戻りますか?<br><small>(今回の記録は付きません)</small></p><button class="go" data-a="yes">ホームに戻る</button><button class="sec" data-a="no">続ける</button></div></div>')},
+ no(){const o=document.getElementById("ov");if(o)o.remove()},
+ yes(){act.no();home()},
+ retry(){S.ph=1;S.list=shuffle(S.wrong).map(q=>q.opts&&!q.pk?{...q,opts:shuffle(q.opts)}:q);S.i=0;S.rt=S.list.length;S.ans=false;quiz()},
+ ans(k){
+  if(S.ans)return;S.ans=true;
+  const q=S.list[S.i],ok=k===(q.x||q.m?q.ans:q.t),d=load();d.done++;if(ok)d.ok++;save(d);
+  if(S.ph){ok?S.r2++:S.w2.push(q)}else{ok?S.first++:S.wrong.push(q)}
+  document.querySelectorAll(".opt").forEach(b=>{b.disabled=true;if(b.dataset.v===(q.x||q.m?q.ans:q.t))b.classList.add("ok");else if(b.dataset.v===k)b.classList.add("ng")});
+  const last=S.i+1>=S.list.length,fb=document.getElementById("fb");
+  fb.innerHTML=q.x?xFb(q,ok,last):`<div class="fb ${ok?"good":"bad"}"><strong>${ok?"○ 正解!":"× 不正解"}</strong>${q.m?`<p>「${q.w}」の${L[q.fi]}形${q.adj?(q.kari?"(カリ活用)":"(本活用)"):""}は <b>${q.ans}</b></p>`:`<p>${q.w}(${q.r})は <b>${T[q.t].n}</b></p>${q.k?`<p>「${q.w}」は${L[q.f]}形(カリ活用)です。</p>`:""}`}${cjHtml(q)}<p class="ex">${T[q.t].e}</p></div>
+  <button class="go" data-a="next">${last?(!S.ph&&S.wrong.length?"復習へ進む":"結果を見る"):"次の問題"}</button>`;
+  fb.scrollIntoView({behavior:"smooth",block:"end"});
+ },
+ next(){S.ans=false;S.i++;if(S.i<S.list.length)return quiz();if(!S.ph&&S.wrong.length)return mid();finish()}
+};
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b&&act[b.dataset.a])act[b.dataset.a](b.dataset.v)});
+document.addEventListener("touchstart",function(){},{passive:true});
+try{if("serviceWorker" in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register("sw.js")}catch(e){}
+home();
+(async()=>{try{
+ if(!window.claude||!window.claude.use)return;
+ const[db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
+ if(!db||!user)return;
+ const id=await user.id();if(!id)return;
+ const ref=db.doc("data/users/"+id+"/progress"),snap=await ref.get();
+ const r=Object.assign({last:"",streak:0,best:0,days:[],done:0,ok:0},snap.exists?snap.data():{});
+ const m=merge(load(),r);mem=m;try{localStorage.setItem(KEY,JSON.stringify(m))}catch(e){}
+ dbRef=ref;ref.set(m).catch(()=>{});
+ if(!S)home();
+}catch(e){}})();
+</script>
+</body>
+</html>
